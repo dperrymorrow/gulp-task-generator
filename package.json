@@ -1,0 +1,46 @@
+{
+  "name": "big-gulp",
+  "version": "1.0.0",
+  "description": "CLI tool that sets up your Gulpfile as a static site generator or build tool",
+  "main": "bin/big-gulp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dperrymorrow/big-gulp.git"
+  },
+  "keywords": [
+    "static",
+    "site",
+    "gulp",
+    "CLI",
+    "build",
+    "tool"
+  ],
+  "author": "David Morrow",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dperrymorrow/big-gulp/issues"
+  },
+  "bin": {
+    "big-gulp": "bin/big-gulp.js"
+  },
+  "homepage": "https://github.com/dperrymorrow/big-gulp",
+  "dependencies": {
+    "async": "^1.5.2",
+    "colors": "^1.1.2",
+    "decache": "^3.0.3",
+    "fs-extra": "^0.26.5",
+    "handlebars": "^4.0.5",
+    "inquirer": "^0.12.0",
+    "q": "^1.4.1",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-less": "^3.0.5",
+    "gulp-print": "^2.0.1",
+    "gulp-jade": "^1.1.0"
+  }
+}

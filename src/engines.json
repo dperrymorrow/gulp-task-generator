@@ -1,0 +1,18 @@
+{
+  "less": {
+    "template": "templates/less_task.hbs",
+    "dependencies": {
+      "gulp": "^3.9.1",
+      "gulp-less": "^3.0.5",
+      "gulp-print": "^2.0.1"
+    }
+  },
+  "jade": {
+    "template": "templates/jade_task.hbs",
+    "dependencies": {
+      "gulp": "^3.9.1",
+      "gulp-jade": "^1.1.0",
+      "gulp-print": "^2.0.1"
+    }
+  }
+}
