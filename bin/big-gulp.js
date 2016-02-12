@@ -4,8 +4,11 @@ var path = require('path'),
   fs = require('fs-extra'),
   colors = require('colors'),
   inquirer = require('inquirer'),
+  _ = require('underscore'),
+  engines = require('./../src/engines'),
   validators = require('./../src/validators'),
   gulp_builder = require('./../src/gulp_builder'),
+  utils = require('./../src/utils'),
   questions = [
     {
       type: 'input',
@@ -23,35 +26,27 @@ var path = require('path'),
     },
     {
       type: 'list',
-      name: 'engine_data',
+      name: 'data',
       message: 'What data would you like to use?',
-      choices: [
-        'JSON', 'YAML', 'None',
-      ]
+      choices: utils.optionsForGroup('data')
     },
     {
       type: 'list',
       name: 'css',
       message: 'Which CSS preprocessor would you like to use?',
-      choices: [
-        'LESS', 'SCSS', 'Stylus', 'None',
-      ]
+      choices: utils.optionsForGroup('css')
     },
     {
       type: 'list',
       name: 'js',
       message: 'Which Js preprocessor would you like to use?',
-      choices: [
-        'Babel', 'Coffeescript', 'None',
-      ]
+      choices: utils.optionsForGroup('js')
     },
     {
       type: 'list',
-      name: 'engine_template',
+      name: 'template',
       message: 'Which template would you like to use?',
-      choices: [
-        'Jade', 'Ejs', 'Mustache', 'None',
-      ]
+      choices: utils.optionsForGroup('template')
     }
   ];
 

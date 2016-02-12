@@ -35,12 +35,17 @@
     "handlebars": "^4.0.5",
     "inquirer": "^0.12.0",
     "q": "^1.4.1",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "underscore.string": "^3.2.3"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
-    "gulp-less": "^3.0.5",
+    "gulp-clean": "^0.3.1",
     "gulp-print": "^2.0.1",
-    "gulp-jade": "^1.1.0"
+    "gulp-less": "^3.0.5",
+    "gulp-jade": "^1.1.0",
+    "gulp-util": "^3.0.7",
+    "gulp-coffee": "^2.3.1",
+    "gulp-rimraf": "^0.2.0"
   }
 }

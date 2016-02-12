@@ -1,2 +1,12 @@
 
-// hi there... im jade
+// rendering jade templates 
+gulp.task('{{engine.task}}', function() {
+  var locals = {};
+ 
+  gulp.src('{{source}}/**/**/*.jade')
+    .pipe(gulpJade({
+      locals: locals
+    }))
+    .pipe(gulp.dest('{{build}}/'))
+    .pipe(gulpPrint());
+});

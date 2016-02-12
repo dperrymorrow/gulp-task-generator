@@ -1,68 +1,88 @@
 
 var _ = require('underscore'),
+  camel = require('underscore.string/camelize'),
   path = require('path'),
   fs = require('fs-extra'),
   Handlebars = require('handlebars'),
   async = require('async'),
   decache = require('decache'),
   q = require('q'),
-  packagePath = path.join(process.cwd(), 'package.json'),
-  gulpFile = fs.createWriteStream(path.join(process.cwd(), 'gulpfile.js'));
-
-decache('./engines.json');
-decache(packagePath);
-
-var packageData = require(packagePath),
-  engines = require('./engines.json');
+  gulpFile = fs.createWriteStream(path.join(process.cwd(), 'gulpfile.js')),
+  utils = require('./utils'),
+  engines = utils.loadEngines();
   
 module.exports.build = function (answers) {
-  var choices = _.values(answers).map(function (value) { return value.toLowerCase(); }),
-    matches = _.chain(engines).pick(choices).values().value(),
-    libs = {};
-
+  var choices = _.values(answers),
+    matches = _.filter(engines, function (engine) {
+      return _.contains(choices, engine.name);
+    }),
+    libs = _.find(engines, {name: 'global'}).dependencies;
+  
   _.chain(matches).pluck('dependencies').each(function (libraries) {
     libs = _.extend(libs, libraries);
   });
  
-  renderRequires(libs).then(function () {
+  renderHeader(libs, answers).then(function () {
 
     async.each(matches, function (engine, cb) {
-      var tmplFile = path.join(__dirname, engine.template);
+      var tmplFile = path.join(__dirname, 'templates', engine.template);
 
       fs.readFile(tmplFile, 'utf8', function (err, contents) {
-        var tmpl = Handlebars.compile(contents);
-        gulpFile.write(tmpl(answers), cb);
+        if (err) console.log('cant load %s'.bgRed.white, tmplFile);
+
+        var tmpl = Handlebars.compile(contents),
+          data = answers;
+
+        data.engine = engine;
+        gulpFile.write(tmpl(data), cb);
       });
 
     }, function () {
-      gulpFile.end();
-      addToPackage(libs);
+      renderFooter(matches).then(function () {
+        gulpFile.end();
+        addToPackage(libs);
+      });
     });
 
   });
 }
 
 function addToPackage(libs) {
-  packageData.devDependencies = packageData.devDependencies || {};
+  var data = utils.loadPackage();
+  data.devDependencies = data.devDependencies || {};
 
   _.keys(libs).forEach(function (key) {
-    packageData.devDependencies[key] = libs[key];
+    data.devDependencies[key] = libs[key];
   });
     
-  fs.writeJson(path.join(process.cwd(), 'package.json'), packageData, function () {
+  fs.writeJson(utils.packagePath, data, function () {
     console.log('Setup complete! run npm install, and then gulp'.green);
   });
 }
 
-function renderRequires(libs) {
+function renderHeader(libs, answers) {
   var defer = q.defer(),
     keyVals = _.chain(libs).mapObject(function (val, key) {
-      return key.replace('gulp-', '');
+      return camel(key);
     }).invert().value();
 
-  fs.readFile(path.join(__dirname, 'templates/requires.hbs'), 'utf8', function (err, contents) {
+  answers.libs = keyVals;
+
+  fs.readFile(path.join(__dirname, 'templates', 'header.hbs'), 'utf8', function (err, contents) {
     var template = Handlebars.compile(contents);
-    gulpFile.write(template({libs: keyVals}), defer.resolve);
+    gulpFile.write(template(answers), defer.resolve);
+  });
+
+  return defer.promise;
+}
+
+function renderFooter(matches) {
+  var defer = q.defer(),
+    tasks = _.pluck(matches, 'task');
+
+   fs.readFile(path.join(__dirname, 'templates', 'footer.hbs'), 'utf8', function (err, contents) {
+    var template = Handlebars.compile(contents);
+    gulpFile.write(template({tasks: tasks}), defer.resolve);
   });
 
   return defer.promise;

@@ -1,18 +1,48 @@
-{
-  "less": {
-    "template": "templates/less_task.hbs",
+[
+  {
+    "name": "global",
     "dependencies": {
       "gulp": "^3.9.1",
-      "gulp-less": "^3.0.5",
-      "gulp-print": "^2.0.1"
+      "gulp-clean": "^0.3.1",
+      "gulp-print": "^2.0.1",
+      "gulp-util": "^3.0.7",
+      "gulp-rimraf": "^0.2.0"
     }
   },
-  "jade": {
-    "template": "templates/jade_task.hbs",
+  {
+    "name": "Less",
+    "group": "css",
+    "task": "less",
+    "template": "less_task.hbs",
     "dependencies": {
-      "gulp": "^3.9.1",
-      "gulp-jade": "^1.1.0",
-      "gulp-print": "^2.0.1"
+      "gulp-less": "^3.0.5"
+    }
+  },
+  {
+    "name": "Jade",
+    "group": "template",
+    "task": "jade",
+    "template": "jade_task.hbs",
+    "dependencies": {
+      "gulp-jade": "^1.1.0"
+    }
+  },
+  {
+    "name": "Coffeescript",
+    "group": "js",
+    "task": "coffee",
+    "template": "coffee_task.hbs",
+    "dependencies": {
+      "gulp-coffee": "^2.3.1"
+    }
+  },
+  {
+    "name": "JSON",
+    "group": "data",
+    "task": "json",
+    "template": "jade_task.hbs",
+    "dependencies": {
+      "gulp-jade": "^1.1.0"
     }
   }
-}
+]

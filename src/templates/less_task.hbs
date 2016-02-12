@@ -1,10 +1,10 @@
 
 // compiling less files
-gulp.task('less', function () {
-  return gulp.src('{{source}}/less/**/*.less')
-    .pipe(less({
+gulp.task('{{engine.task}}', function () {
+  return gulp.src('{{source}}/**/**/*.less')
+    .pipe(gulpLess({
       paths: ['{{source}}/less/includes']
     }))
-    .pipe(gulp.dest('{{build}}/css'))
-    .pipe(print());
+    .pipe(gulp.dest('{{build}}/'))
+    .pipe(gulpPrint());
 });
