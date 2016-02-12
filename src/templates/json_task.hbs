@@ -1,0 +1,11 @@
+
+// load the json data
+loadData = function () {
+  var data = nodeRequireDir(path.join('{{dataDir}}'), function(name, module) {
+    var ext = path.extname(name);
+    if (ext !== '.json' && ext !== '.js') return false;
+    return path.basename(name, path.extname(name));
+  }, true);
+  console.log(data);
+  return data;
+};

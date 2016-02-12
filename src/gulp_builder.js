@@ -13,6 +13,7 @@ var _ = require('underscore'),
   
 module.exports.build = function (answers) {
   var choices = _.values(answers),
+    defer = q.defer(),
     matches = _.filter(engines, function (engine) {
       return _.contains(choices, engine.name);
     }),
@@ -38,17 +39,26 @@ module.exports.build = function (answers) {
       });
 
     }, function () {
+
       renderFooter(matches).then(function () {
         gulpFile.end();
-        addToPackage(libs);
+        return addToPackage(libs);
+      }).then(function () {
+        return createDirs(answers);
+      }).then(function () {
+        defer.resolve();
       });
-    });
 
+    });
   });
+
+  return defer.promise;
 }
 
 function addToPackage(libs) {
-  var data = utils.loadPackage();
+  var data = utils.loadPackage(),
+    defer = q.defer();
+
   data.devDependencies = data.devDependencies || {};
 
   _.keys(libs).forEach(function (key) {
@@ -56,8 +66,10 @@ function addToPackage(libs) {
   });
     
   fs.writeJson(utils.packagePath, data, function () {
-    console.log('Setup complete! run npm install, and then gulp'.green);
+    defer.resolve();
   });
+
+  return defer.promise;
 }
 
 function renderHeader(libs, answers) {
@@ -73,6 +85,25 @@ function renderHeader(libs, answers) {
     gulpFile.write(template(answers), defer.resolve);
   });
 
+  return defer.promise;
+}
+
+function createDirs(answers) {
+  var defer = q.defer(),
+    cwd = process.cwd(),
+    dirs = [
+      path.join(cwd, answers.source),
+      path.join(cwd, answers.build)
+    ];
+  
+  if (answers.data) dirs.push(path.join(cwd, answers.dataDir));
+
+  async.each(dirs, function (dir) {
+    fs.mkdirs(dir, function (err) {
+      if (err) return console.error(err)
+    });
+  }, defer.resolve);
+    
   return defer.promise;
 }
 

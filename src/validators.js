@@ -5,5 +5,9 @@ module.exports = {
       return "Not a valid directory name. Allowed characters are [A-Z], [a-z], [0-9], -, and _";
     }
     return true;
+  },
+
+  falseIfNone: function (answer) {
+    return answer === 'None' ? false : answer;
   }
 }

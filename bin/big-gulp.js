@@ -28,25 +28,37 @@ var path = require('path'),
       type: 'list',
       name: 'data',
       message: 'What data would you like to use?',
-      choices: utils.optionsForGroup('data')
+      choices: utils.optionsForGroup('data', ['None']),
+      filter: validators.falseIfNone
+    },
+    {
+      type: 'input',
+      name: 'dataDir',
+      message: 'Where would you like to keep your data?',
+      default: function (answers) { return answers.source + "/data"; },
+      when: function (answers) { return answers.data === 'None' ? false : true; },
+      validate: validators.dir
     },
     {
       type: 'list',
       name: 'css',
       message: 'Which CSS preprocessor would you like to use?',
-      choices: utils.optionsForGroup('css')
+      choices: utils.optionsForGroup('css', 'None'),
+      filter: validators.falseIfNone
     },
     {
       type: 'list',
       name: 'js',
       message: 'Which Js preprocessor would you like to use?',
-      choices: utils.optionsForGroup('js')
+      choices: utils.optionsForGroup('js', 'None'),
+      filter: validators.falseIfNone
     },
     {
       type: 'list',
       name: 'template',
       message: 'Which template would you like to use?',
-      choices: utils.optionsForGroup('template')
+      choices: utils.optionsForGroup('template'),
+      filter: validators.falseIfNone
     }
   ];
 
@@ -79,6 +91,8 @@ function checkGulpFile() {
 
 function start() {
   inquirer.prompt(questions, function (answers) {
-    gulp_builder.build(answers);
+    gulp_builder.build(answers).then(function () {
+      console.log('all set, npm install and then run gulp'.green);
+    });
   });
 }

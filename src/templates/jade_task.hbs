@@ -1,11 +1,12 @@
 
 // rendering jade templates 
 gulp.task('{{engine.task}}', function() {
-  var locals = {};
- 
   gulp.src('{{source}}/**/**/*.jade')
+    {{#if data}}
+    .pipe(gulpData(loadData))
+    {{/if}}
     .pipe(gulpJade({
-      locals: locals
+      pretty: true
     }))
     .pipe(gulp.dest('{{build}}/'))
     .pipe(gulpPrint());

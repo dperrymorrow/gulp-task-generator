@@ -8,8 +8,10 @@ module.exports = {
   package: null,
   packagePath: path.join(process.cwd(), 'package.json'),
 
-  optionsForGroup: function (group) {
-    return _.chain(this.loadEngines()).where({'group': group}).pluck('name').value();
+  optionsForGroup: function (group, add) {
+    var opts = _.chain(this.loadEngines()).where({'group': group}).pluck('name').value();
+    add = add ? (add.length ? add : [add]) : undefined;
+    return add ? opts.concat(add) : opts;
   },
 
   loadEngines: function () {

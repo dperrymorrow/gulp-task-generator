@@ -24,6 +24,7 @@
     "task": "jade",
     "template": "jade_task.hbs",
     "dependencies": {
+      "gulp-data": "^1.2.1",
       "gulp-jade": "^1.1.0"
     }
   },
@@ -39,10 +40,10 @@
   {
     "name": "JSON",
     "group": "data",
-    "task": "json",
-    "template": "jade_task.hbs",
+    "template": "json_task.hbs",
     "dependencies": {
-      "gulp-jade": "^1.1.0"
+      "node-require-dir": "^0.0.6",
+      "path": "^0.12.7"
     }
   }
 ]
