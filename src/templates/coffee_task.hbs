@@ -1,8 +1,0 @@
-
-// compile coffeescript files
-gulp.task('{{engine.task}}', function() {
-  gulp.src('{{source}}/*.coffee')
-    .pipe(gulpCoffee({bare: true}).on('error', gulpUtil.log))
-    .pipe(gulp.dest('{{build}}/'))
-    .pipe(gulpPrint());
-});

@@ -4,10 +4,11 @@ var _ = require('underscore'),
   path = require('path'),
   fs = require('fs-extra'),
   Handlebars = require('handlebars'),
+  helpers = require('./handlebars_helpers'),
   async = require('async'),
   decache = require('decache'),
   q = require('q'),
-  gulpFile = fs.createWriteStream(path.join(process.cwd(), 'gulpfile.js')),
+  gulpFile = path.join(process.cwd(), 'gulpfile.js'),
   utils = require('./utils'),
   engines = utils.loadEngines();
   
@@ -17,45 +18,31 @@ module.exports.build = function (answers) {
     matches = _.filter(engines, function (engine) {
       return _.contains(choices, engine.name);
     }),
-    libs = _.find(engines, {name: 'global'}).dependencies;
+    libs = getLibs(matches);
   
-  _.chain(matches).pluck('dependencies').each(function (libraries) {
-    libs = _.extend(libs, libraries);
-  });
- 
-  renderHeader(libs, answers).then(function () {
+  fs.readFile(path.join(__dirname, 'gulpfile.hbs'), 'utf8', function (err, contents) {
+    var tmpl = Handlebars.compile(contents),
+      data = answers;
 
-    async.each(matches, function (engine, cb) {
-      var tmplFile = path.join(__dirname, 'templates', engine.template);
-
-      fs.readFile(tmplFile, 'utf8', function (err, contents) {
-        if (err) console.log('cant load %s'.bgRed.white, tmplFile);
-
-        var tmpl = Handlebars.compile(contents),
-          data = answers;
-
-        data.engine = engine;
-        gulpFile.write(tmpl(data), cb);
-      });
-
-    }, function () {
-
-      renderFooter(matches).then(function () {
-        gulpFile.end();
-        return addToPackage(libs);
-      }).then(function () {
-        return createDirs(answers);
-      }).then(function () {
-        defer.resolve();
-      });
-
+    data.libs = libs;
+    
+    fs.outputFile(gulpFile, tmpl(data), function (err) {
+      addToPackage(libs)
+        .then(function () {
+          return createDirs(answers);
+        }).then(defer.resolve);
     });
+
   });
 
   return defer.promise;
 }
 
 function addToPackage(libs) {
+  
+  console.log("Adding the following dependencies to " + utils.packagePath);
+  console.log(_.values(libs).join(", "));
+
   var data = utils.loadPackage(),
     defer = q.defer();
 
@@ -72,20 +59,15 @@ function addToPackage(libs) {
   return defer.promise;
 }
 
-function renderHeader(libs, answers) {
-  var defer = q.defer(),
-    keyVals = _.chain(libs).mapObject(function (val, key) {
-      return camel(key);
-    }).invert().value();
-
-  answers.libs = keyVals;
-
-  fs.readFile(path.join(__dirname, 'templates', 'header.hbs'), 'utf8', function (err, contents) {
-    var template = Handlebars.compile(contents);
-    gulpFile.write(template(answers), defer.resolve);
+function getLibs(matches) {
+  var libs = _.find(engines, {name: 'global'}).dependencies;
+  _.chain(matches).pluck('dependencies').each(function (libraries) {
+    libs = _.extend(libs, libraries);
   });
 
-  return defer.promise;
+  return _.chain(libs).mapObject(function (val, key) {
+      return camel(key);
+    }).invert().value();
 }
 
 function createDirs(answers) {
@@ -98,23 +80,13 @@ function createDirs(answers) {
   
   if (answers.data) dirs.push(path.join(cwd, answers.dataDir));
 
-  async.each(dirs, function (dir) {
+  async.each(dirs, function (dir, cb) {
     fs.mkdirs(dir, function (err) {
       if (err) return console.error(err)
+      console.log("creating dir: ".yellow + dir.cyan);
+      cb();
     });
   }, defer.resolve);
     
-  return defer.promise;
-}
-
-function renderFooter(matches) {
-  var defer = q.defer(),
-    tasks = _.pluck(matches, 'task');
-
-   fs.readFile(path.join(__dirname, 'templates', 'footer.hbs'), 'utf8', function (err, contents) {
-    var template = Handlebars.compile(contents);
-    gulpFile.write(template({tasks: tasks}), defer.resolve);
-  });
-
   return defer.promise;
 }

@@ -12,8 +12,6 @@
   {
     "name": "Less",
     "group": "css",
-    "task": "less",
-    "template": "less_task.hbs",
     "dependencies": {
       "gulp-less": "^3.0.5"
     }
@@ -21,8 +19,6 @@
   {
     "name": "Jade",
     "group": "template",
-    "task": "jade",
-    "template": "jade_task.hbs",
     "dependencies": {
       "gulp-data": "^1.2.1",
       "gulp-jade": "^1.1.0"
@@ -31,8 +27,6 @@
   {
     "name": "Coffeescript",
     "group": "js",
-    "task": "coffee",
-    "template": "coffee_task.hbs",
     "dependencies": {
       "gulp-coffee": "^2.3.1"
     }
@@ -40,7 +34,6 @@
   {
     "name": "JSON",
     "group": "data",
-    "template": "json_task.hbs",
     "dependencies": {
       "node-require-dir": "^0.0.6",
       "path": "^0.12.7"

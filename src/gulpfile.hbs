@@ -1,0 +1,86 @@
+{{#each libs}}
+var {{@key}} = require('{{this}}');
+{{/each}}
+
+// clean the build dir
+gulp.task('clean', function () {
+  return gulp.src('{{build}}/', {read: false})
+    .pipe(gulpRimraf())
+    .pipe(gulpPrint());
+});
+
+// copy files not being pre-processed files
+gulp.task('copy', function() {
+  return gulp.src([
+      {{~#unless js~}}'{{source}}/**/**/*.js',{{~/unless~}}
+      {{~#unless css~}}'{{source}}/**/**/*.css',{{~/unless~}}
+      {{~#unless template~}}'{{source}}/**/**/*.html',{{~/unless~}}
+      '{{source}}/**/**/*.jpg',
+      '{{source}}/**/**/*.jpeg',
+      '{{source}}/**/**/*.png',
+      '{{source}}/**/**/*.gif',
+      '{{source}}/**/**/*.woff',
+      '{{source}}/**/**/*.ttf',
+      '{{source}}/**/**/*.svg'
+    ])
+    .pipe(gulp.dest('{{build}}/'))
+    .pipe(gulpPrint());
+});
+
+{{#if_eq data "json"}}
+// load the json data
+loadData = function () {
+  var data = nodeRequireDir(path.join('{{dataDir}}'), function(name, module) {
+    var ext = path.extname(name);
+    if (ext !== '.json' && ext !== '.js') return false;
+    return path.basename(name, path.extname(name));
+  }, true);
+  console.log(data);
+  return data;
+};
+{{/if_eq}}
+
+{{#if_eq js "coffeescript"}}
+// compile coffeescript files
+gulp.task('{{js}}', function() {
+  gulp.src('{{source}}/*.coffee')
+    .pipe(gulpCoffee({bare: true}).on('error', gulpUtil.log))
+    .pipe(gulp.dest('{{build}}/'))
+    .pipe(gulpPrint());
+});
+{{/if_eq}}
+
+{{#if_eq css "less"}}
+// compiling less files
+gulp.task('{{css}}', function () {
+  return gulp.src('{{source}}/**/**/*.less')
+    .pipe(gulpLess({
+      paths: ['{{source}}/less/includes']
+    }))
+    .pipe(gulp.dest('{{build}}/'))
+    .pipe(gulpPrint());
+});
+{{/if_eq}}
+
+{{#if_eq template "jade"}}
+// rendering jade templates 
+gulp.task('{{template}}', function() {
+  gulp.src('{{source}}/**/**/*.jade')
+    {{#if data}}
+    .pipe(gulpData(loadData))
+    {{/if}}
+    .pipe(gulpJade({
+      pretty: true
+    }))
+    .pipe(gulp.dest('{{build}}/'))
+    .pipe(gulpPrint());
+});
+{{/if_eq}}
+
+// the default task, run all in series
+gulp.task('default', [
+  'copy', 
+  {{~#if template~}}'{{template}}',{{~/if~}}
+  {{~#if css~}}'{{css}}',{{~/if~}}
+  {{~#if js~}}'{{js}}'{{~/if~}}
+]);

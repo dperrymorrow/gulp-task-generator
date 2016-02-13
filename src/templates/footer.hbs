@@ -1,3 +1,0 @@
-
-// the default task, run all in series
-gulp.task('default', ['copy', {{#each tasks}}{{#if this}}'{{this}}', {{/if}}{{/each}}]);
