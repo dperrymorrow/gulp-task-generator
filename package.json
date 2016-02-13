@@ -39,25 +39,5 @@
     "underscore.string": "^3.2.3"
   },
   "devDependencies": {
-    "gulp": "gulp",
-    "gulp-clean": "^0.3.1",
-    "gulp-print": "^2.0.1",
-    "gulp-less": "^3.0.5",
-    "gulp-jade": "^1.1.0",
-    "gulp-util": "^3.0.7",
-    "gulp-coffee": "^2.3.1",
-    "gulp-rimraf": "^0.2.0",
-    "gulp-data": "^1.2.1",
-    "path": "path",
-    "node-require-dir": "^0.0.6",
-    "gulpClean": "gulp-clean",
-    "gulpPrint": "gulp-print",
-    "gulpUtil": "gulp-util",
-    "gulpRimraf": "gulp-rimraf",
-    "gulpLess": "gulp-less",
-    "gulpData": "gulp-data",
-    "gulpJade": "gulp-jade",
-    "gulpCoffee": "gulp-coffee",
-    "nodeRequireDir": "node-require-dir"
   }
 }
