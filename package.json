@@ -39,5 +39,16 @@
     "underscore.string": "^3.2.3"
   },
   "devDependencies": {
+    "gulp": "gulp",
+    "gulpClean": "gulp-clean",
+    "gulpPrint": "gulp-print",
+    "gulpUtil": "gulp-util",
+    "gulpRimraf": "gulp-rimraf",
+    "gulpLess": "gulp-less",
+    "gulpData": "gulp-data",
+    "gulpJade": "gulp-jade",
+    "gulpCoffee": "gulp-coffee",
+    "nodeRequireDir": "node-require-dir",
+    "path": "path"
   }
 }
