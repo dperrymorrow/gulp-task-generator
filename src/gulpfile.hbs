@@ -35,7 +35,6 @@ loadData = function () {
     if (ext !== '.json' && ext !== '.js') return false;
     return path.basename(name, path.extname(name));
   }, true);
-  console.log(data);
   return data;
 };
 {{/if_eq}}
@@ -43,7 +42,8 @@ loadData = function () {
 {{#if_eq js "coffeescript"}}
 // compile coffeescript files
 gulp.task('{{js}}', function() {
-  gulp.src('{{source}}/*.coffee')
+  gulp.src('{{source}}/**/**/*.coffee')
+    .pipe(gulpPlumber())
     .pipe(gulpCoffee({bare: true}).on('error', gulpUtil.log))
     .pipe(gulp.dest('{{build}}/'))
     .pipe(gulpPrint());
@@ -54,6 +54,7 @@ gulp.task('{{js}}', function() {
 // compiling less files
 gulp.task('{{css}}', function () {
   return gulp.src('{{source}}/**/**/*.less')
+    .pipe(gulpPlumber())
     .pipe(gulpLess({
       paths: ['{{source}}/less/includes']
     }))
@@ -66,6 +67,7 @@ gulp.task('{{css}}', function () {
 // rendering jade templates 
 gulp.task('{{template}}', function() {
   gulp.src('{{source}}/**/**/*.jade')
+    .pipe(gulpPlumber())
     {{#if data}}
     .pipe(gulpData(loadData))
     {{/if}}
@@ -77,10 +79,33 @@ gulp.task('{{template}}', function() {
 });
 {{/if_eq}}
 
-// the default task, run all in series
-gulp.task('default', [
-  'copy', 
-  {{~#if template~}}'{{template}}',{{~/if~}}
-  {{~#if css~}}'{{css}}',{{~/if~}}
+{{#if server}}
+gulp.task('server', function() {
+  gulp.src('{{build}}')
+    .pipe(gulpWebserver({
+      host: 'localhost',
+      port: {{serverPort}},
+      livereload: true,
+      directoryListing: false
+    }));
+});
+
+gulp.task('browser', function() {
+  open( 'http://localhost:{{serverPort}}' );
+});
+{{/if}}
+
+gulp.task('watch', function () {
+  gulpWatch('{{source}}/**/**/**/*', gulpBatch(function (events, done) {
+    gulp.start('build', done);
+  }));
+});
+
+gulp.task('build', [
+  {{~#if template~}}'{{template}}', {{~/if~}}
+  {{~#if css~}}'{{css}}', {{~/if~}}
   {{~#if js~}}'{{js}}'{{~/if~}}
+]);
+gulp.task('default', ['copy', 'build', 'watch' 
+  {{~#if server~}}, 'server', 'browser'{{~/if~}}
 ]);

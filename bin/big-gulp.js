@@ -59,6 +59,20 @@ var path = require('path'),
       message: 'Which template would you like to use?',
       choices: utils.optionsForGroup('template'),
       filter: validators.falseIfNone
+    },
+    {
+      type: 'confirm',
+      name: 'server',
+      message: 'Do you want a local server for development?'
+    },
+    {
+      type: 'input',
+      name: 'serverPort',
+      default: 8080,
+      message: 'What port would you like to run your localhost on?',
+      when: function (answers) {
+        return answers.server;
+      }
     }
   ];
 

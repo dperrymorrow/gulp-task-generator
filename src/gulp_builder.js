@@ -10,43 +10,48 @@ var _ = require('underscore'),
   q = require('q'),
   gulpFile = path.join(process.cwd(), 'gulpfile.js'),
   utils = require('./utils'),
-  engines = utils.loadEngines();
+  engines = utils.loadEngines(),
+  matches = {},
+  answers = {};
   
 module.exports.build = function (answers) {
+  answers = answers;
+  console.log(answers);
+
   var choices = _.values(answers),
-    defer = q.defer(),
-    matches = _.filter(engines, function (engine) {
-      return _.contains(choices, engine.name);
-    }),
-    libs = getLibs(matches);
+    defer = q.defer();
+    
+  matches = _.filter(engines, function (engine) {
+    return _.contains(choices, engine.name) || answers[engine.name] == true || engine.name === 'global';
+  });
   
   fs.readFile(path.join(__dirname, 'gulpfile.hbs'), 'utf8', function (err, contents) {
     var tmpl = Handlebars.compile(contents),
       data = answers;
 
-    data.libs = libs;
+    data.libs = getLibs(matches, true);
     
     fs.outputFile(gulpFile, tmpl(data), function (err) {
-      addToPackage(libs)
+      addToPackage()
         .then(function () {
-          return createDirs(answers);
+          return createDirs();
         }).then(defer.resolve);
     });
-
   });
 
   return defer.promise;
 }
 
-function addToPackage(libs) {
-  
-  console.log("Adding the following dependencies to " + utils.packagePath);
-  console.log(_.values(libs).join(", "));
-
-  var data = utils.loadPackage(),
+function addToPackage() {
+  var libs = getLibs(false),
+    data = utils.loadPackage(),
     defer = q.defer();
 
   data.devDependencies = data.devDependencies || {};
+
+  console.log("");
+  console.log("Adding the following dependencies to " + utils.packagePath.green.bold);
+  console.log(_.keys(libs).join(", ").blue);
 
   _.keys(libs).forEach(function (key) {
     data.devDependencies[key] = libs[key];
@@ -59,18 +64,19 @@ function addToPackage(libs) {
   return defer.promise;
 }
 
-function getLibs(matches) {
-  var libs = _.find(engines, {name: 'global'}).dependencies;
+function getLibs(invert) {
+  invert = _.isUndefined(invert) ? false : invert;
+  var libs = {};
   _.chain(matches).pluck('dependencies').each(function (libraries) {
     libs = _.extend(libs, libraries);
   });
 
-  return _.chain(libs).mapObject(function (val, key) {
+  return invert ? _.chain(libs).mapObject(function (val, key) {
       return camel(key);
-    }).invert().value();
+    }).invert().value() : libs;
 }
 
-function createDirs(answers) {
+function createDirs() {
   var defer = q.defer(),
     cwd = process.cwd(),
     dirs = [

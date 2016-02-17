@@ -23,8 +23,8 @@ module.exports = {
   },
 
   loadPackage: function () {
+    decache(this.packagePath);
     if (_.isNull(this.package)) {
-      decache(this.packagePath);
       this.package = require(this.packagePath);
     }
     return this.package;

@@ -6,37 +6,47 @@
       "gulp-clean": "^0.3.1",
       "gulp-print": "^2.0.1",
       "gulp-util": "^3.0.7",
-      "gulp-rimraf": "^0.2.0"
+      "gulp-rimraf": "^0.2.0",
+      "gulp-plumber": "^1.1.0",
+      "gulp-watch": "^4.3.5",
+      "gulp-batch": "^1.0.5"
     }
   },
   {
-    "name": "Less",
+    "name": "less",
     "group": "css",
     "dependencies": {
       "gulp-less": "^3.0.5"
     }
   },
   {
-    "name": "Jade",
+    "name": "jade",
     "group": "template",
     "dependencies": {
-      "gulp-data": "^1.2.1",
       "gulp-jade": "^1.1.0"
     }
   },
   {
-    "name": "Coffeescript",
+    "name": "coffeescript",
     "group": "js",
     "dependencies": {
       "gulp-coffee": "^2.3.1"
     }
   },
   {
-    "name": "JSON",
+    "name": "json",
     "group": "data",
     "dependencies": {
+      "gulp-data": "^1.2.1",
       "node-require-dir": "^0.0.6",
-      "path": "^0.12.7"
+      "path": "^0.11.14"
+    }
+  },
+  {
+    "name": "server",
+    "dependencies": {
+      "gulp-webserver": "^0.9.1",
+      "open": "^0.0.5"
     }
   }
 ]
