@@ -14,8 +14,8 @@ var _ = require('underscore'),
   matches = {},
   answers = {};
   
-module.exports.build = function (answers) {
-  answers = answers;
+module.exports.build = function (result) {
+  answers = result;
   console.log(answers);
 
   var choices = _.values(answers),
@@ -35,7 +35,9 @@ module.exports.build = function (answers) {
       addToPackage()
         .then(function () {
           return createDirs();
-        }).then(defer.resolve);
+        }).then(function () {
+          defer.resolve();
+        });
     });
   });
 
@@ -50,8 +52,10 @@ function addToPackage() {
   data.devDependencies = data.devDependencies || {};
 
   console.log("");
-  console.log("Adding the following dependencies to " + utils.packagePath.green.bold);
-  console.log(_.keys(libs).join(", ").blue);
+  console.log("Adding npm dependencies ".cyan);
+  _.keys(libs).forEach(function (key) {
+    console.log(key + ": " + libs[key]);
+  });
 
   _.keys(libs).forEach(function (key) {
     data.devDependencies[key] = libs[key];
@@ -87,12 +91,16 @@ function createDirs() {
   if (answers.data) dirs.push(path.join(cwd, answers.dataDir));
 
   async.each(dirs, function (dir, cb) {
-    fs.mkdirs(dir, function (err) {
-      if (err) return console.error(err)
+    fs.mkdir(dir, function (err) {
       console.log("creating dir: ".yellow + dir.cyan);
+      
+      if (err && err.code === 'EEXIST') {
+        console.log('Already exists! skipping...'.gray);
+      }
+
       cb();
     });
   }, defer.resolve);
-    
+
   return defer.promise;
 }

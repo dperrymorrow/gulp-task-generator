@@ -13,66 +13,77 @@ var path = require('path'),
     {
       type: 'input',
       name: "source",
-      message: "Where will you keep your source files?",
+      message: "Where are your source files?",
       default: 'source',
       validate: validators.dir
     },
     {
       type: 'input',
       name: 'build',
-      message: 'Where would you like your build (generated) files?',
+      message: 'Where do you want build (generated) files?',
       default: 'build',
       validate: validators.dir
     },
     {
       type: 'list',
-      name: 'data',
-      message: 'What data would you like to use?',
-      choices: utils.optionsForGroup('data', ['None']),
-      filter: validators.falseIfNone
-    },
-    {
-      type: 'input',
-      name: 'dataDir',
-      message: 'Where would you like to keep your data?',
-      default: function (answers) { return answers.source + "/data"; },
-      when: function (answers) { return answers.data === 'None' ? false : true; },
-      validate: validators.dir
-    },
-    {
-      type: 'list',
       name: 'css',
-      message: 'Which CSS preprocessor would you like to use?',
+      message: 'Which CSS preprocessor?',
       choices: utils.optionsForGroup('css', 'None'),
       filter: validators.falseIfNone
     },
     {
       type: 'list',
       name: 'js',
-      message: 'Which Js preprocessor would you like to use?',
+      message: 'Which Javascript preprocessor?',
       choices: utils.optionsForGroup('js', 'None'),
       filter: validators.falseIfNone
+    },
+     {
+      type: 'confirm',
+      name: 'browserify',
+      message: 'Would you like to browserify your js?'
     },
     {
       type: 'list',
       name: 'template',
-      message: 'Which template would you like to use?',
-      choices: utils.optionsForGroup('template'),
+      message: 'Which template engine?',
+      choices: utils.optionsForGroup('template', 'None'),
+      filter: validators.falseIfNone
+    },
+    {
+      type: 'list',
+      name: 'data',
+      message: 'Need external data files?',
+      choices: utils.optionsForGroup('data', ['None']),
+      when: function (answers) { return answers.template; },
       filter: validators.falseIfNone
     },
     {
       type: 'confirm',
+      name: 'frontmatter',
+      message: 'User frontmatter for vars in template headers?',
+      when: function (answers) { return answers.template; }
+    },
+    {
+      type: 'input',
+      name: 'dataDir',
+      message: 'Where will you store data files?',
+      default: function (answers) { return answers.source + "/data"; },
+      when: function (answers) { return answers.data; },
+      validate: validators.dir
+    },
+    {
+      type: 'confirm',
       name: 'server',
-      message: 'Do you want a local server for development?'
+      message: 'Want a localhost server?',
+      when: function (answers) { return answers.template; }
     },
     {
       type: 'input',
       name: 'serverPort',
       default: 8080,
-      message: 'What port would you like to run your localhost on?',
-      when: function (answers) {
-        return answers.server;
-      }
+      message: 'What port for localhost?',
+      when: function (answers) { return answers.server; }
     }
   ];
 

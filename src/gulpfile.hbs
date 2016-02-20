@@ -9,7 +9,7 @@ gulp.task('clean', function () {
     .pipe(gulpPrint());
 });
 
-// copy files not being pre-processed files
+// copy files not being pre-processed
 gulp.task('copy', function() {
   return gulp.src([
       {{~#unless js~}}'{{source}}/**/**/*.js',{{~/unless~}}
@@ -40,23 +40,49 @@ loadData = function () {
 {{/if_eq}}
 
 {{#if_eq js "coffeescript"}}
-// compile coffeescript files
+// process js files
 gulp.task('{{js}}', function() {
   gulp.src('{{source}}/**/**/*.coffee')
     .pipe(gulpPlumber())
-    .pipe(gulpCoffee({bare: true}).on('error', gulpUtil.log))
+    .pipe(gulpCoffee({
+      bare: true
+    }))
+    {{#if browserify}}
+    .pipe(gulpBrowserify({
+      insertGlobals : true,
+      debug : false
+    }))
+    {{/if}}
     .pipe(gulp.dest('{{build}}/'))
     .pipe(gulpPrint());
 });
 {{/if_eq}}
 
+{{#unless js}}
+{{#if browserify}}
+gulp.task('browserify', {{~#if js~}}['{{js}}'],{{~/if~}} function() {
+  gulp.src('{{source}}/**/**/*.js')
+    .pipe(gulpBrowserify({
+      insertGlobals : true,
+      debug : false
+    }))
+    .pipe(gulp.dest('{{build}}'));
+});
+{{/if}}
+{{/unless}}
+
+
 {{#if_eq css "less"}}
 // compiling less files
 gulp.task('{{css}}', function () {
-  return gulp.src('{{source}}/**/**/*.less')
+  return gulp.src('{{source}}/**/**/[^_]*.less')
     .pipe(gulpPlumber())
     .pipe(gulpLess({
-      paths: ['{{source}}/less/includes']
+      // for easier inclusion from bower or npm modules
+      paths: [
+        './bower_components/',
+        './node_modules/'
+      ]
     }))
     .pipe(gulp.dest('{{build}}/'))
     .pipe(gulpPrint());
@@ -66,10 +92,13 @@ gulp.task('{{css}}', function () {
 {{#if_eq template "jade"}}
 // rendering jade templates 
 gulp.task('{{template}}', function() {
-  gulp.src('{{source}}/**/**/*.jade')
+  gulp.src('{{source}}/**/**/[^_]*.jade')
     .pipe(gulpPlumber())
     {{#if data}}
     .pipe(gulpData(loadData))
+    {{/if}}
+    {{#if frontmatter}}
+    .pipe(gulpFrontMatter())
     {{/if}}
     .pipe(gulpJade({
       pretty: true
@@ -80,7 +109,7 @@ gulp.task('{{template}}', function() {
 {{/if_eq}}
 
 {{#if server}}
-gulp.task('server', function() {
+gulp.task('server', ['build'], function() {
   gulp.src('{{build}}')
     .pipe(gulpWebserver({
       host: 'localhost',
@@ -90,7 +119,7 @@ gulp.task('server', function() {
     }));
 });
 
-gulp.task('browser', function() {
+gulp.task('browser', ['server'], function() {
   open( 'http://localhost:{{serverPort}}' );
 });
 {{/if}}
@@ -101,11 +130,11 @@ gulp.task('watch', function () {
   }));
 });
 
-gulp.task('build', [
-  {{~#if template~}}'{{template}}', {{~/if~}}
-  {{~#if css~}}'{{css}}', {{~/if~}}
-  {{~#if js~}}'{{js}}'{{~/if~}}
+gulp.task('build', ['copy',
+  {{~#if css~}}'{{css}}'{{~/if~}}
+  {{~#if js~}}, '{{js}}'{{~/if~}}
+  {{~#unless js~}}{{~#if browserify~}}, 'browserify'{{~/if~}}{{~/unless}}
 ]);
-gulp.task('default', ['copy', 'build', 'watch' 
-  {{~#if server~}}, 'server', 'browser'{{~/if~}}
+gulp.task('default', ['copy', 'watch'
+  {{~#if server~}}, 'browser'{{~else~}}, 'build'{{/if}}
 ]);
