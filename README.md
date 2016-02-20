@@ -21,6 +21,7 @@ big-gulp will now ask you a series of questions about your project and build you
 - Where would you like to keep your data? *source/data*
 - Which CSS preprocessor would you like to use? *Less*
 - Which Js preprocessor would you like to use? *Coffeescript*
+- Would you like to browserify your javascript files?
 - Which template would you like to use? *Jade*
 
 Your ``gulpfile.js`` will be generated with you preferences, all setup to run a static site builder / build tool.
