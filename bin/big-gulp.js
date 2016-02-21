@@ -41,7 +41,7 @@ var path = require('path'),
      {
       type: 'confirm',
       name: 'browserify',
-      message: 'Would you like to browserify your js?'
+      message: 'Would you like to Browserify your js?'
     },
     {
       type: 'list',
@@ -117,7 +117,7 @@ function checkGulpFile() {
 function start() {
   inquirer.prompt(questions, function (answers) {
     gulp_builder.build(answers).then(function () {
-      console.log('all set, npm install and then run gulp'.green);
+      console.log('all set, `npm install` and then run `gulp`'.green.bold);
     });
   });
 }
