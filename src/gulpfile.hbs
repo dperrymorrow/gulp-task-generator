@@ -4,13 +4,11 @@ var {{@key}} = require('{{this}}');
 
 // clean the build dir
 gulp.task('clean', function () {
-  return gulp.src('{{build}}/', {read: false})
-    .pipe(gulpRimraf())
-    .pipe(gulpPrint());
+  return del(['{{build}}/**/**/*']);
 });
 
 // copy files not being pre-processed
-gulp.task('copy', function() {
+gulp.task('copy', ['clean'], function() {
   return gulp.src([
       {{~#unless js~}}'{{source}}/**/**/*.js',{{~/unless~}}
       {{~#unless css~}}'{{source}}/**/**/*.css',{{~/unless~}}
@@ -41,7 +39,7 @@ loadData = function () {
 
 {{#if_eq js "coffeescript"}}
 // process js files
-gulp.task('{{js}}', function() {
+gulp.task('{{js}}', ['clean'], function() {
   gulp.src('{{source}}/**/**/*.coffee')
     .pipe(gulpPlumber())
     .pipe(gulpCoffee({
@@ -74,7 +72,7 @@ gulp.task('browserify', {{~#if js~}}['{{js}}'],{{~/if~}} function() {
 
 {{#if_eq css "less"}}
 // compiling less files
-gulp.task('{{css}}', function () {
+gulp.task('{{css}}', ['clean'], function () {
   return gulp.src('{{source}}/**/**/[^_]*.less')
     .pipe(gulpPlumber())
     .pipe(gulpLess({
@@ -91,7 +89,7 @@ gulp.task('{{css}}', function () {
 
 {{#if_eq template "jade"}}
 // rendering jade templates 
-gulp.task('{{template}}', function() {
+gulp.task('{{template}}', ['clean'], function() {
   gulp.src('{{source}}/**/**/[^_]*.jade')
     .pipe(gulpPlumber())
     {{#if data}}
@@ -124,17 +122,20 @@ gulp.task('browser', ['server'], function() {
 });
 {{/if}}
 
-gulp.task('watch', function () {
+gulp.task('watch', ['clean'], function () {
   gulpWatch('{{source}}/**/**/**/*', gulpBatch(function (events, done) {
     gulp.start('build', done);
   }));
 });
 
-gulp.task('build', ['copy',
-  {{~#if css~}}'{{css}}'{{~/if~}}
+gulp.task('build', [
+  'clean',
+  'copy'
+  {{~#if css~}}, '{{css}}'{{~/if~}}
   {{~#if js~}}, '{{js}}'{{~/if~}}
   {{~#unless js~}}{{~#if browserify~}}, 'browserify'{{~/if~}}{{~/unless}}
 ]);
-gulp.task('default', ['copy', 'watch'
+gulp.task('default', [
+  'copy', 'watch'
   {{~#if server~}}, 'browser'{{~else~}}, 'build'{{/if}}
 ]);
