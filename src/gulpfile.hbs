@@ -1,3 +1,4 @@
+"use strict";
 const gulp = require('gulp');
 const plumber = require('gulp-plumber');
 const rename = require('gulp-rename');
@@ -21,7 +22,7 @@ const cleanCss = require('gulp-clean-css');
 const {{cssProcessor}} = require('gulp-{{cssProcessor}}');
 {{/if}}
 
-{{#if processCss}}
+{{#if css}}
 gulp.task('css', () => {
   gulp.src(['{{cssSource}}/**/*.{{cssExt}}'])
     .pipe(plumber({
@@ -53,15 +54,9 @@ gulp.task('css', () => {
 });
 {{/if}}
 
-gulp.task('watch', () => {
-  {{#if processCss}}
-  gulp.watch('{{cssSource}}/**/*.{{cssExt}}',['css']);
+gulp.task('default', [{{#if css}}'css'{{/if}}], () => {
+  {{#if css}}
+  gulp.watch('{{cssSource}}/**/*.{{cssExt}}', ['css']);
   {{/if}}
 });
 
-gulp.task('default', [
-  {{#if processCss}}
-  'css',
-  {{/if}}
-  'watch'
-]);

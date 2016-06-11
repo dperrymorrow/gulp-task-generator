@@ -12,7 +12,7 @@ module.exports = class {
   constructor(answers) {
     this.answers = answers;
     this.answers.cssExt = this.constructor.cssExt(this.answers);
-    this.answers.processCss = this.constructor.processCss(this.answers);
+    this.answers.css = this.constructor.processCss(this.answers);
 
     if (this.answers.processCss) {
       this.makeDir(this.answers.cssSource);
