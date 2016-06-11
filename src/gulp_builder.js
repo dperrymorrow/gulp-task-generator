@@ -1,106 +1,48 @@
+"use strict";
 
-var _ = require('underscore'),
-  camel = require('underscore.string/camelize'),
-  path = require('path'),
-  fs = require('fs-extra'),
-  Handlebars = require('handlebars'),
-  helpers = require('./handlebars_helpers'),
-  async = require('async'),
-  decache = require('decache'),
-  q = require('q'),
-  gulpFile = path.join(process.cwd(), 'gulpfile.js'),
-  utils = require('./utils'),
-  engines = utils.loadEngines(),
-  matches = {},
-  answers = {};
-  
-module.exports.build = function (result) {
-  answers = result;
-  console.log(answers);
+const path = require('path');
+const gulpFile = path.join(process.cwd(), 'gulpfile.js');
+const fs = require('fs-extra');
+const Handlebars = require('handlebars');
+const helpers = require('./handlebars_helpers');
+const _ = require('underscore');
 
-  var choices = _.values(answers),
-    defer = q.defer();
-    
-  matches = _.filter(engines, function (engine) {
-    return _.contains(choices, engine.name) || answers[engine.name] == true || engine.name === 'global';
-  });
-  
-  fs.readFile(path.join(__dirname, 'gulpfile.hbs'), 'utf8', function (err, contents) {
-    var tmpl = Handlebars.compile(contents),
-      data = answers;
+module.exports = class {
 
-    data.libs = getLibs(matches, true);
-    
-    fs.outputFile(gulpFile, tmpl(data), function (err) {
-      addToPackage()
-        .then(function () {
-          return createDirs();
-        }).then(function () {
-          defer.resolve();
-        });
+  constructor(answers) {
+    this.answers = answers;
+    this.answers.cssExt = this.constructor.cssExt(this.answers);
+    this.answers.processCss = this.constructor.processCss(this.answers);
+
+    if (this.answers.processCss) {
+      this.makeDir(this.answers.cssSource);
+      this.makeDir(this.answers.cssDest);
+    }
+
+    fs.readFile(path.join(__dirname, 'gulpfile.hbs'), 'utf8', (err, contents) => {
+      let tmpl = Handlebars.compile(contents);
+      fs.outputFile(gulpFile, tmpl(this.answers), err => console.log('Gulpfile.js has been created'.green));
     });
-  });
+  }
 
-  return defer.promise;
-}
+  makeDir(dir) {
+    let dest = path.join(process.cwd(), dir);
+    try {
+      fs.mkdirSync(dest);
+      console.log(`${dest} created.`.green);
+    } catch(e) {
+      if ( e.code == 'EEXIST' ) console.log(`${dest} already exists, skipping.`.red);
+    }
+  }
 
-function addToPackage() {
-  var libs = getLibs(false),
-    data = utils.loadPackage(),
-    defer = q.defer();
+  static processCss(answers) {
+    return answers.cssProcessor || answers.autoprefix || answers.cssMinify || answers.cssConcat;
+  }
 
-  data.devDependencies = data.devDependencies || {};
-
-  console.log("");
-  console.log("Adding npm dependencies ".cyan);
-  _.keys(libs).forEach(function (key) {
-    console.log(key + ": " + libs[key]);
-  });
-
-  _.keys(libs).forEach(function (key) {
-    data.devDependencies[key] = libs[key];
-  });
-    
-  fs.writeJson(utils.packagePath, data, function () {
-    defer.resolve();
-  });
-
-  return defer.promise;
-}
-
-function getLibs(invert) {
-  invert = _.isUndefined(invert) ? false : invert;
-  var libs = {};
-  _.chain(matches).pluck('dependencies').each(function (libraries) {
-    libs = _.extend(libs, libraries);
-  });
-
-  return invert ? _.chain(libs).mapObject(function (val, key) {
-      return camel(key);
-    }).invert().value() : libs;
-}
-
-function createDirs() {
-  var defer = q.defer(),
-    cwd = process.cwd(),
-    dirs = [
-      path.join(cwd, answers.source),
-      path.join(cwd, answers.build)
-    ];
-  
-  if (answers.data) dirs.push(path.join(cwd, answers.dataDir));
-
-  async.each(dirs, function (dir, cb) {
-    fs.mkdir(dir, function (err) {
-      console.log("creating dir: ".yellow + dir.cyan);
-      
-      if (err && err.code === 'EEXIST') {
-        console.log('Already exists! skipping...'.gray);
-      }
-
-      cb();
-    });
-  }, defer.resolve);
-
-  return defer.promise;
+  static cssExt(answers) {
+    if (answers.cssProcessor) {
+      return answers.cssProcessor === 'stylus' ? 'styl' : answers.cssProcessor;
+    }
+    return 'css';
+  }
 }

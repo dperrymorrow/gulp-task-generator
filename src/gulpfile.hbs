@@ -1,141 +1,67 @@
-{{#each libs}}
-var {{@key}} = require('{{this}}');
-{{/each}}
-
-// clean the build dir
-gulp.task('clean', function () {
-  return del(['{{build}}/**/**/*']);
-});
-
-// copy files not being pre-processed
-gulp.task('copy', ['clean'], function() {
-  return gulp.src([
-      {{~#unless js~}}'{{source}}/**/**/*.js',{{~/unless~}}
-      {{~#unless css~}}'{{source}}/**/**/*.css',{{~/unless~}}
-      {{~#unless template~}}'{{source}}/**/**/*.html',{{~/unless~}}
-      '{{source}}/**/**/*.jpg',
-      '{{source}}/**/**/*.jpeg',
-      '{{source}}/**/**/*.png',
-      '{{source}}/**/**/*.gif',
-      '{{source}}/**/**/*.woff',
-      '{{source}}/**/**/*.ttf',
-      '{{source}}/**/**/*.svg'
-    ])
-    .pipe(gulp.dest('{{build}}/'))
-    .pipe(gulpPrint());
-});
-
-{{#if_eq data "json"}}
-// load the json data
-loadData = function () {
-  var data = nodeRequireDir(path.join('{{dataDir}}'), function(name, module) {
-    var ext = path.extname(name);
-    if (ext !== '.json' && ext !== '.js') return false;
-    return path.basename(name, path.extname(name));
-  }, true);
-  return data;
-};
-{{/if_eq}}
-
-{{#if_eq js "coffeescript"}}
-// process js files
-gulp.task('{{js}}', ['clean'], function() {
-  gulp.src('{{source}}/**/**/*.coffee')
-    .pipe(gulpPlumber())
-    .pipe(gulpCoffee({
-      bare: true
-    }))
-    {{#if browserify}}
-    .pipe(gulpBrowserify({
-      insertGlobals : true,
-      debug : false
-    }))
-    {{/if}}
-    .pipe(gulp.dest('{{build}}/'))
-    .pipe(gulpPrint());
-});
-{{/if_eq}}
-
-{{#unless js}}
-{{#if browserify}}
-gulp.task('browserify', {{~#if js~}}['{{js}}'],{{~/if~}} function() {
-  gulp.src('{{source}}/**/**/*.js')
-    .pipe(gulpBrowserify({
-      insertGlobals : true,
-      debug : false
-    }))
-    .pipe(gulp.dest('{{build}}'));
-});
+const gulp = require('gulp');
+const plumber = require('gulp-plumber');
+const rename = require('gulp-rename');
+const notify = require('gulp-notify');
+const sourcemaps = require('gulp-sourcemaps');
+{{#if cssConcat}}
+const concat = require('gulp-concat');
 {{/if}}
+{{#if jsConcat}}
+{{#unless cssConcat}}
+const concat = require('gulp-concat');
 {{/unless}}
+{{/if}}
+{{#if autoPrefix}}
+const autoPrefixer = require('gulp-autoprefixer');
+{{/if}}
+{{#if cssMin}}
+const cleanCss = require('gulp-clean-css');
+{{/if}}
+{{#if cssProcessor}}
+const {{cssProcessor}} = require('gulp-{{cssProcessor}}');
+{{/if}}
 
-
-{{#if_eq css "less"}}
-// compiling less files
-gulp.task('{{css}}', ['clean'], function () {
-  return gulp.src('{{source}}/**/**/[^_]*.less')
-    .pipe(gulpPlumber())
-    .pipe(gulpLess({
-      // for easier inclusion from bower or npm modules
-      paths: [
-        './bower_components/',
-        './node_modules/'
-      ]
+{{#if processCss}}
+gulp.task('css', () => {
+  gulp.src(['{{cssSource}}/**/*.{{cssExt}}'])
+    .pipe(plumber({
+      handleError: err => {
+        console.log(err);
+        this.emit('end');
+      }
     }))
-    .pipe(gulp.dest('{{build}}/'))
-    .pipe(gulpPrint());
-});
-{{/if_eq}}
-
-{{#if_eq template "jade"}}
-// rendering jade templates 
-gulp.task('{{template}}', ['clean'], function() {
-  gulp.src('{{source}}/**/**/[^_]*.jade')
-    .pipe(gulpPlumber())
-    {{#if data}}
-    .pipe(gulpData(loadData))
+    {{#if cssProcessor}}
+    .pipe(sourcemaps.init())
+    .pipe({{cssProcessor}}())
     {{/if}}
-    {{#if frontmatter}}
-    .pipe(gulpFrontMatter())
+    {{#if autoPrefix}}
+    .pipe(autoPrefixer())
     {{/if}}
-    .pipe(gulpJade({
-      pretty: true
-    }))
-    .pipe(gulp.dest('{{build}}/'))
-    .pipe(gulpPrint());
-});
-{{/if_eq}}
-
-{{#if server}}
-gulp.task('server', ['build'], function() {
-  gulp.src('{{build}}')
-    .pipe(gulpWebserver({
-      host: 'localhost',
-      port: {{serverPort}},
-      livereload: true,
-      directoryListing: false
-    }));
-});
-
-gulp.task('browser', ['server'], function() {
-  open( 'http://localhost:{{serverPort}}' );
+    {{#if cssConcat}}
+    .pipe(concat('{{cssFile}}'))
+    {{/if}}
+    .pipe(gulp.dest('{{cssDest}}'))
+    {{#if cssMin}}
+    .pipe(rename({suffix: '.min'}))
+    .pipe(cleanCss())
+    {{/if}}
+    {{#if cssProcessor}}
+    .pipe(sourcemaps.write())
+    {{/if}}
+    .pipe(gulp.dest('{{cssDest}}'))
+    .pipe(notify('css task finished'))
 });
 {{/if}}
 
-gulp.task('watch', ['clean'], function () {
-  gulpWatch('{{source}}/**/**/**/*', gulpBatch(function (events, done) {
-    gulp.start('build', done);
-  }));
+gulp.task('watch', () => {
+  {{#if processCss}}
+  gulp.watch('{{cssSource}}/**/*.{{cssExt}}',['css']);
+  {{/if}}
 });
 
-gulp.task('build', [
-  'clean',
-  'copy'
-  {{~#if css~}}, '{{css}}'{{~/if~}}
-  {{~#if js~}}, '{{js}}'{{~/if~}}
-  {{~#unless js~}}{{~#if browserify~}}, 'browserify'{{~/if~}}{{~/unless}}
-]);
 gulp.task('default', [
-  'copy', 'watch'
-  {{~#if server~}}, 'browser'{{~else~}}, 'build'{{/if}}
+  {{#if processCss}}
+  'css',
+  {{/if}}
+  'watch'
 ]);

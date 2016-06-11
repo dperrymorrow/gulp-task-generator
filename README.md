@@ -1,15 +1,15 @@
 # Big-Gulp
 
-A command line tool that builds your gulpfile to your exact needs by asking you a series of questions. You can build a full static site generator with dev server, or a simple build tool for pre-processing assets and preparing them for deployment. 
+A command line tool that builds your gulpfile to your exact needs by asking you a series of questions. You can build a full static site generator with dev server, or a simple build tool for pre-processing assets and preparing them for deployment.
 
 ``
-$ npm install big-gulp -g
+$ npm install gulp-generator -g
 ``
 
 now change directories to your project and run the setup
 
 ``
-$ big-gulp
+$ gulp-generator
 ``
 
 big-gulp will now ask you a series of questions about your project and build your ``gulpfile.js`` accordingly
@@ -26,7 +26,7 @@ big-gulp will now ask you a series of questions about your project and build you
 
 Your ``gulpfile.js`` will be generated with you preferences, all setup to run a static site builder / build tool.
 
-The packages needed to run your gulpfile have been added to your npm ``package.json`` file as dev dependencies. You now need to 
+The packages needed to run your gulpfile have been added to your npm ``package.json`` file as dev dependencies. You now need to
 
 ``
 npm install

@@ -1,0 +1,29 @@
+{
+  "core": [
+    "gulp",
+    "gulp-plumber",
+    "gulp-rename",
+    "gulp-notify",
+    "gulp-rename"
+  ],
+
+  "scss": ["gulp-sass", "gulp-sourcemaps"],
+  "less": ["gulp-less", "gulp-sourcemaps"],
+  "stylus": ["gulp-stylus", "gulp-sourcemaps"],
+  "cssMin": "gulp-clean-css",
+  "cssConcat": "gulp-concat",
+  "autoPrefix": "gulp-autoprefixer",
+
+  "babel": "gulp-babel",
+  "jsConcat": [
+    "gulp-concat",
+    "gulp-uglify"
+  ],
+  "coffeeScript": "gulp-coffee",
+  "jsHint": "gulp-jshint",
+
+  "images": [
+    "gulp-cache",
+    "gulp-imagemin"
+  ]
+}
