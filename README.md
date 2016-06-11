@@ -1,4 +1,4 @@
-# Big-Gulp
+# Gulp-Generator
 
 A command line tool that builds your gulpfile to your exact needs by asking you a series of questions. You can build a full static site generator with dev server, or a simple build tool for pre-processing assets and preparing them for deployment.
 
