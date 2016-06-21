@@ -2,6 +2,7 @@
 
 const path = require('path');
 const gulpFile = path.join(process.cwd(), 'gulpfile.js');
+const templatePath = path.join(__dirname, '/templates');
 const fs = require('fs-extra');
 const Handlebars = require('handlebars');
 const helpers = require('./handlebars_helpers');
@@ -19,10 +20,10 @@ module.exports = class {
       this.makeDir(this.answers.cssDest);
     }
 
-    fs.readFile(path.join(__dirname, 'gulpfile.hbs'), 'utf8', (err, contents) => {
-      let tmpl = Handlebars.compile(contents);
-      fs.outputFile(gulpFile, tmpl(this.answers), err => console.log('Gulpfile.js has been created'.green));
-    });
+    Handlebars.registerPartial('css', fs.readFileSync(`${templatePath}/css.hbs.js`, 'utf8'));
+    Handlebars.registerPartial('js', fs.readFileSync(`${templatePath}/js.hbs.js`, 'utf8'));
+    let tmpl = Handlebars.compile(fs.readFileSync(`${templatePath}/gulpfile.hbs.js`, 'utf8'));
+    fs.outputFile(gulpFile, tmpl(this.answers), err => console.log('Gulpfile.js has been created'.green));
   }
 
   makeDir(dir) {
