@@ -7,6 +7,7 @@ const fs = require('fs-extra');
 const Handlebars = require('handlebars');
 const helpers = require('./handlebars_helpers');
 const _ = require('underscore');
+const mkdirp = require('mkdirp');
 
 module.exports = class {
 
@@ -14,25 +15,37 @@ module.exports = class {
     this.answers = answers;
     this.answers.cssExt = this.constructor.cssExt(this.answers);
     this.answers.css = this.constructor.processCss(this.answers);
+    this.makeDirs();
 
-    if (this.answers.processCss) {
-      this.makeDir(this.answers.cssSource);
-      this.makeDir(this.answers.cssDest);
-    }
+    Handlebars.registerPartial('cssBody', fs.readFileSync(`${templatePath}/css_body.hbs.js`, 'utf8'));
+    Handlebars.registerPartial('cssHeader', fs.readFileSync(`${templatePath}/css_header.hbs.js`, 'utf8'));
 
-    Handlebars.registerPartial('css', fs.readFileSync(`${templatePath}/css.hbs.js`, 'utf8'));
-    Handlebars.registerPartial('js', fs.readFileSync(`${templatePath}/js.hbs.js`, 'utf8'));
+    Handlebars.registerPartial('jsBody', fs.readFileSync(`${templatePath}/js_body.hbs.js`, 'utf8'));
+    Handlebars.registerPartial('jsHeader', fs.readFileSync(`${templatePath}/js_header.hbs.js`, 'utf8'));
+
     let tmpl = Handlebars.compile(fs.readFileSync(`${templatePath}/gulpfile.hbs.js`, 'utf8'));
     fs.outputFile(gulpFile, tmpl(this.answers), err => console.log('Gulpfile.js has been created'.green));
+  }
+
+  makeDirs() {
+    if (this.answers.jsSource) this.makeDir(this.answers.jsSource);
+    if (this.answers.jsDest) this.makeDir(this.answers.jsDest);
+
+    if (this.answers.cssSource) this.makeDir(this.answers.cssSource);
+    if (this.answers.cssDest) this.makeDir(this.answers.cssDest);
   }
 
   makeDir(dir) {
     let dest = path.join(process.cwd(), dir);
     try {
-      fs.mkdirSync(dest);
+      mkdirp.sync(dest);
       console.log(`${dest} created.`.green);
     } catch(e) {
-      if ( e.code == 'EEXIST' ) console.log(`${dest} already exists, skipping.`.red);
+      if ( e.code == 'EEXIST' ) {
+        console.log(`${dest} already exists, skipping.`.red);
+      } else {
+        console.log(e);
+      }
     }
   }
 

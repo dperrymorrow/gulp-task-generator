@@ -1,15 +1,15 @@
 {
   "name": "gulp-generator",
   "version": "1.0.0",
-  "description": "CLI tool that sets up your Gulpfile as a static site generator or build tool",
-  "main": "bin/gulp-generator.js",
+  "description": "CLI tool that sets up your Gulpfile based on your answers to questions.",
+  "main": "bin/cli.js",
   "engine": "node 4.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dperrymorrow/big-gulp.git"
+    "url": "git+https://github.com/dperrymorrow/gulp-generator.git"
   },
   "keywords": [
     "static",
@@ -22,7 +22,7 @@
   "author": "David Morrow",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dperrymorrow/big-gulp/issues"
+    "url": "https://github.com/dperrymorrow/gulp-generator/issues"
   },
   "bin": {
     "gulp-generator": "bin/gulp-generator.js"
@@ -34,6 +34,8 @@
     "handlebars": "^4.0.5",
     "inquirer": "^0.12.0",
     "is-invalid-path": "^0.1.0",
+    "mkdirp": "^0.5.1",
+    "simple-spinner": "0.0.5",
     "underscore": "^1.8.3",
     "valid-filename": "^1.1.1"
   },

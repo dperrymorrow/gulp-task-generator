@@ -1,9 +1,9 @@
 "use strict";
 
-const path = require('path');
 const exec = require('child_process').exec;
 const libs = require('./dependencies.json');
 const _ = require('underscore');
+const spinner = require('simple-spinner');
 
 module.exports = class {
 
@@ -11,7 +11,6 @@ module.exports = class {
     this.answers = answers;
     this.buildList();
     this.install();
-    return new Promise((resolve, reject) => this.resolve = resolve);
   }
 
   buildList() {
@@ -26,6 +25,7 @@ module.exports = class {
 
   install() {
     console.log("> Installing the NPM packages based on your choices.".yellow);
+    spinner.start(150, {hideCursor: true, doNotBlock: true});
 
     let child = exec(`npm i ${this.packages} --save`, (error, stdout, stderr) => {
       process.stdout.write(stdout);
@@ -35,7 +35,7 @@ module.exports = class {
         return;
       }
       console.log('> All NPM packages have been installed.'.green);
-      this.resolve();
+      spinner.stop();
     });
 
   }

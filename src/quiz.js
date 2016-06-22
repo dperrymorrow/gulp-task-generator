@@ -10,12 +10,13 @@ const GulpBuilder = require('./gulp_builder');
 
 module.exports = class {
 
-  constructor() {
+  constructor(args) {
     console.log(`> Running Gulp-Generator in ${process.cwd()}`.yellow);
+    this.args = args;
 
     this.checkPackageFile()
-      .then(this.checkGulpFile)
-      .then(this.beginQuiz);
+      .then(() => this.checkGulpFile())
+      .then(() => this.beginQuiz());
   }
 
   exitWithMsg(msg) {
@@ -25,7 +26,7 @@ module.exports = class {
 
   beginQuiz() {
     inquirer.prompt(questions, answers => {
-      new PackageBuilder(answers);
+      if (this.args[0] !== 'install=false') new PackageBuilder(answers);
       new GulpBuilder(answers);
     });
   }

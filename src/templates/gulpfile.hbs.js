@@ -7,19 +7,12 @@ const sourcemaps = require('gulp-sourcemaps');
 {{#if_or cssConcat jsConcat}}
 const concat = require('gulp-concat');
 {{/if_or}}
-{{#if autoPrefix}}
-const autoPrefixer = require('gulp-autoprefixer');
-{{/if}}
-{{#if cssMin}}
-const cleanCss = require('gulp-clean-css');
-{{/if}}
-{{#if cssProcessor}}
-const {{cssProcessor}} = require('gulp-{{cssProcessor}}');
-{{/if}}
+{{> cssHeader}}
+{{> jsHeader}}
 
-{{#if css}}
-{{> css}}
-{{/if}}
+{{> cssBody}}
+
+{{> jsBody}}
 
 gulp.task('default', [{{#if css}}'css'{{/if}}], () => {
   {{#if css}}

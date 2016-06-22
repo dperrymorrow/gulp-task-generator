@@ -66,6 +66,13 @@ module.exports = [
     message: 'Would you like to concatenate and minify your Javascript?'
   }, {
     type: 'input',
+    name: 'jsFile',
+    message: 'Name of your concatenated js file?',
+    default: 'main.js',
+    validate: file,
+    when: (answers) => answers.jsConcat
+  }, {
+    type: 'input',
     name: "jsSource",
     message:  answers => `Where are your ${answers.coffeeScript ? 'CoffeeScript' : 'Javascript'} source files?`,
     default: answers => `source/${answers.coffeeScript ? 'coffee' : 'js'}`,
