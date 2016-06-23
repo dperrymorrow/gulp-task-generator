@@ -1,5 +1,5 @@
-gulp.task('js',function(){
-  gulp.src(['{{jsSrc}}/**/*.js'])
+gulp.task('js', () => {
+  gulp.src(['{{tasks.js.src}}/**/*.{{tasks.js.ext}}'])
     .pipe(plumber({
       handleError: (err) => {
         console.log(err);
@@ -7,14 +7,14 @@ gulp.task('js',function(){
       }
     }))
     {{#if coffeeScript}}
-    .pipe(coffee({bare: true})
+    .pipe(coffee({bare: true}))
     {{/if}}
     {{#if jsHint}}
     .pipe(jshint())
     .pipe(jshint.reporter('default'))
     {{/if}}
     // .pipe(browserify())
-    .pipe(gulp.dest('{{jsDest}}'))
+    .pipe(gulp.dest('{{tasks.js.dest}}'))
     {{#if jsConcat}}
     .pipe(concat('{{jsFile}}'))
     .pipe(rename({suffix: '.min'}))
@@ -23,6 +23,6 @@ gulp.task('js',function(){
     {{#if babel}}
     .pipe(babel())
     {{/if}}
-    .pipe(gulp.dest('{{jsDest}}'))
+    .pipe(gulp.dest('{{tasks.js.dest}}'))
     .pipe(notify('js task finished'))
 });

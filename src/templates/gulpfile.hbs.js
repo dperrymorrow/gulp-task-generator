@@ -7,16 +7,19 @@ const sourcemaps = require('gulp-sourcemaps');
 {{#if_or cssConcat jsConcat}}
 const concat = require('gulp-concat');
 {{/if_or}}
-{{> cssHeader}}
-{{> jsHeader}}
+{{#if css}}{{> cssHeader}}{{/if}}
+{{#if js}}{{> jsHeader}}{{/if}}
 
-{{> cssBody}}
+{{#if css}}{{> cssBody}}{{/if}}
 
-{{> jsBody}}
+{{#if js}}{{> jsBody}}{{/if}}
 
-gulp.task('default', [{{#if css}}'css'{{/if}}], () => {
-  {{#if css}}
-  gulp.watch('{{cssSource}}/**/*.{{cssExt}}', ['css']);
-  {{/if}}
+gulp.task('default', {{{stringifyKeys tasks}}}, () => {
+	{{#each tasks}}
+  gulp.watch('{{src}}/**/*.{{ext}}', ['{{@key}}']);
+  {{/each}}
 });
 
+{{#each .}}
+// {{@key}}: {{this}}
+{{/each}}

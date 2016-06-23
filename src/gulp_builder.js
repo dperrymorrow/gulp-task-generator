@@ -14,7 +14,8 @@ module.exports = class {
   constructor(answers) {
     this.answers = answers;
     this.answers.cssExt = this.constructor.cssExt(this.answers);
-    this.answers.css = this.constructor.processCss(this.answers);
+    this.answers.jsExt =
+    this.answers.tasks = this.getTasks();
     this.makeDirs();
 
     Handlebars.registerPartial('cssBody', fs.readFileSync(`${templatePath}/css_body.hbs.js`, 'utf8'));
@@ -35,6 +36,25 @@ module.exports = class {
     if (this.answers.cssDest) this.makeDir(this.answers.cssDest);
   }
 
+  getTasks() {
+    let tasks = {};
+    if (this.answers.js) {
+      tasks.js = {
+        src: this.answers.jsSource,
+        dest: this.answers.jsDest,
+        ext: this.constructor.jsExt(this.answers)
+      }
+    }
+    if (this.answers.css) {
+       tasks.css = {
+        src: this.answers.cssSource,
+        dest: this.answers.cssDest,
+        ext: this.constructor.cssExt(this.answers)
+      }
+    }
+    return tasks;
+  }
+
   makeDir(dir) {
     let dest = path.join(process.cwd(), dir);
     try {
@@ -49,8 +69,8 @@ module.exports = class {
     }
   }
 
-  static processCss(answers) {
-    return answers.cssProcessor || answers.autoprefix || answers.cssMinify || answers.cssConcat;
+  static jsExt(answers) {
+    return answers.coffeeScript ? 'coffee' : 'js';
   }
 
   static cssExt(answers) {

@@ -7,20 +7,37 @@
     "gulp-rename"
   ],
 
-  "scss": ["gulp-sass", "gulp-sourcemaps"],
-  "less": ["gulp-less", "gulp-sourcemaps"],
-  "stylus": ["gulp-stylus", "gulp-sourcemaps"],
   "cssMin": "gulp-clean-css",
   "cssConcat": "gulp-concat",
   "autoPrefix": "gulp-autoprefixer",
 
+  "scss": [
+    "gulp-sass",
+    "gulp-sourcemaps"
+  ],
+
+  "less": [
+    "gulp-less",
+    "gulp-sourcemaps"
+  ],
+
+  "stylus": [
+    "gulp-stylus",
+    "gulp-sourcemaps"
+  ],
+
+  "coffeeScript": "gulp-coffee",
   "babel": "gulp-babel",
+
   "jsConcat": [
     "gulp-concat",
     "gulp-uglify"
   ],
-  "coffeeScript": "gulp-coffee",
-  "jsHint": "gulp-jshint",
+
+  "jsHint": [
+    "gulp-jshint",
+    "jshint"
+  ],
 
   "images": [
     "gulp-cache",

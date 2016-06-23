@@ -1,5 +1,5 @@
 gulp.task('css', () => {
-  gulp.src(['{{cssSource}}/**/*.{{cssExt}}'])
+  gulp.src(['{{tasks.css.src}}/**/*.{{tasks.css.ext}}'])
     .pipe(plumber({
       handleError: err => {
         console.log(err);
@@ -16,7 +16,7 @@ gulp.task('css', () => {
     {{#if cssConcat}}
     .pipe(concat('{{cssFile}}'))
     {{/if}}
-    .pipe(gulp.dest('{{cssDest}}'))
+    .pipe(gulp.dest('{{tasks.css.dest}}'))
     {{#if cssMin}}
     .pipe(rename({suffix: '.min'}))
     .pipe(cleanCss())
@@ -24,6 +24,6 @@ gulp.task('css', () => {
     {{#if cssProcessor}}
     .pipe(sourcemaps.write())
     {{/if}}
-    .pipe(gulp.dest('{{cssDest}}'))
+    .pipe(gulp.dest('{{tasks.css.dest}}'))
     .pipe(notify('css task finished'))
 });
