@@ -1,7 +1,7 @@
 "use strict";
 
 const exec = require('child_process').exec;
-const libs = require('./dependencies.json');
+const libs = require('./dependencies');
 const _ = require('underscore');
 const spinner = require('simple-spinner');
 
