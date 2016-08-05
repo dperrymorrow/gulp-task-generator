@@ -1,7 +1,7 @@
 {
-  "name": "gulp-generator",
+  "name": "gulp-task-generator",
   "version": "1.0.0",
-  "description": "CLI tool that sets up your Gulpfile based on your answers to questions.",
+  "description": "CLI tool that sets up your gulpfile.js based on your answers.",
   "main": "bin/cli.js",
   "engine": "node 4.0",
   "scripts": {
@@ -19,13 +19,13 @@
     "build",
     "tool"
   ],
-  "author": "David Morrow",
+  "author": "dperrymorrow <dperrymorrow@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/dperrymorrow/gulp-generator/issues"
   },
   "bin": {
-    "gulp-generator": "bin/gulp-generator.js"
+    "gulp-generator": "bin/cli.js"
   },
   "homepage": "https://github.com/dperrymorrow/gulp-generator",
   "dependencies": {
