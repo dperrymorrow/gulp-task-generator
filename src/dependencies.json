@@ -26,6 +26,9 @@
     "gulp-sourcemaps"
   ],
 
+  "ejs": "gulp-ejs",
+  "jade": "gulp-jade",
+
   "coffeeScript": "gulp-coffee",
   "babel": "gulp-babel",
 

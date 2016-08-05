@@ -44,41 +44,6 @@ Gulpfile.js has been created
 /Users/dperrymorrow/builds/generator-test/build/css created.
 
 > Installing the NPM packages based on your choices.
-
--generator-test@1.0.0 /Users/dperrymorrow/builds/generator-test
-├─┬ gulp@3.9.1
-│ └─┬ liftoff@2.3.0
-│   ├─┬ findup-sync@0.4.2
-│   │ ├─┬ micromatch@2.3.11
-│   │ │ └─┬ kind-of@3.0.4
-│   │ │   └── is-buffer@1.1.4
-│   │ └── resolve-dir@0.1.1
-│   ├─┬ fined@1.0.1
-│   │ └── lodash.isempty@4.3.1
-│   └── lodash.mapvalues@4.5.1
-├─┬ gulp-autoprefixer@3.1.0
-│ └─┬ autoprefixer@6.4.0
-│   └── caniuse-db@1.0.30000517
-├── gulp-babel@6.1.2
-├── gulp-clean-css@2.0.12
-├── gulp-coffee@2.3.2
-├── gulp-concat@2.6.0
-├─┬ gulp-jshint@2.0.1
-│ ├── lodash@4.14.1
-│ └─┬ rcloader@0.1.2
-│   └─┬ rcfinder@0.1.9
-│     └── lodash.clonedeep@4.4.1
-├── gulp-less@3.1.0
-├─┬ gulp-notify@2.2.0
-│ └─┬ node-notifier@4.6.0
-│   └─┬ cli-usage@0.1.2
-│     └── marked@0.3.6
-├── gulp-plumber@1.1.0
-├── gulp-rename@1.2.2
-├── gulp-sourcemaps@1.6.0
-├── gulp-uglify@1.5.4
-└── jshint@2.9.2
-
 > All NPM packages have been installed.
 ```
 

@@ -101,7 +101,33 @@ module.exports = [
     default: 'build/js',
     validate: dir,
     when: answers => answers.js
-  }
+  },
+  // HTML
+  {
+    type: 'confirm',
+    name: 'html',
+    message: 'Would you like to use a template engine for HTML?'
+  }, {
+    type: 'list',
+    name: 'htmlProcessor',
+    message: 'Which HTML template engine would you like to use?',
+    choices: ['jade', 'ejs'],
+    when: answers => answers.html
+  }, {
+    type: 'input',
+    name: "htmlSource",
+    message:  answers => `Where are your .${GulpBuilder.htmlExt(answers)} source files?`,
+    default: answers => `source/${GulpBuilder.htmlExt(answers)}`,
+    validate: dir,
+    when: answers => answers.html
+  }, {
+    type: 'input',
+    name: 'jsDest',
+    message: 'Where do you want your compiled HTML (generated) files?',
+    default: 'build/',
+    validate: dir,
+    when: answers => answers.html
+  },
 ];
 
 function dir(name) {
