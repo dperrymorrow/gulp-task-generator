@@ -20,6 +20,3 @@ gulp.task('default', {{{stringifyKeys tasks}}}, () => {
   {{/each}}
 });
 
-{{#each .}}
-// {{@key}}: {{this}}
-{{/each}}

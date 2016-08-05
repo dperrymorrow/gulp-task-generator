@@ -13,7 +13,6 @@ gulp.task('js', () => {
     .pipe(jshint())
     .pipe(jshint.reporter('default'))
     {{/if}}
-    // .pipe(browserify())
     .pipe(gulp.dest('{{tasks.js.dest}}'))
     {{#if jsConcat}}
     .pipe(concat('{{jsFile}}'))

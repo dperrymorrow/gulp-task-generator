@@ -1,6 +1,6 @@
 {
   "name": "gulp-task-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI tool that sets up your gulpfile.js based on your answers.",
   "main": "bin/cli.js",
   "engine": "node 4.0",
@@ -19,13 +19,12 @@
     "build",
     "tool"
   ],
-  "author": "dperrymorrow <dperrymorrow@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/dperrymorrow/gulp-generator/issues"
   },
   "bin": {
-    "gulp-generator": "bin/cli.js"
+    "gulp-task-generator": "bin/cli.js"
   },
   "homepage": "https://github.com/dperrymorrow/gulp-generator",
   "dependencies": {
