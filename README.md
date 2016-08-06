@@ -19,6 +19,7 @@ A command line tool that builds your gulpfile to your exact needs by asking you 
 - Uglify
 - Sourcemaps
 
+## Installing:
 
  ```
  $ npm install gulp-task-generator -g
