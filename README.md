@@ -19,6 +19,7 @@ A command line tool that builds your gulpfile to your exact needs by asking you 
 - Uglify
 - Sourcemaps
 
+## Installing:
 
  ```
  $ npm install gulp-task-generator -g
@@ -32,7 +33,7 @@ now change directories to your project and run the setup
 
 Gulp-Task-Generator will now ask you a series of questions about your project and build your gulpfile.js accordingly.
 
-```bash
+```
 $ gulp-task-generator
 ------------------------------- QUESTIONS -------------------------------
 ? You already have a Gulpfile.js. Overwrite? Yes
