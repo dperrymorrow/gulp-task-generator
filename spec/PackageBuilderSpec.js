@@ -5,8 +5,9 @@ const libs = require('../src/dependencies');
 const answers = require('./support/answers');
 
 const noDeps = [
-  'css', 'js', 'html', 'cssDest', 'jsDest',
-  'cssSource', 'jsSource', 'jsFile', 'cssFile'
+  'js', 'jsSource', 'jsDest', 'jsFile',
+  'html', 'htmlSource', 'htmlDest', 'cssFile',
+  'css', 'cssSource', 'cssDest'
 ];
 
 describe("Package Builder", () => {
