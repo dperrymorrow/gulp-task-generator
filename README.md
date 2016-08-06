@@ -1,6 +1,8 @@
 
 # Gulp Task Generator
 
+![gulp-task-generator](https://raw.githubusercontent.com/dperrymorrow/gulp-task-generator/master/gulp_generator_logo.png)
+
 A command line tool that builds your gulpfile to your exact needs by asking you a series of questions.
 
 ## Supported Tasks
@@ -17,7 +19,6 @@ A command line tool that builds your gulpfile to your exact needs by asking you 
 - Uglify
 - Sourcemaps
 
-![gulp-task-generator](https://raw.githubusercontent.com/dperrymorrow/gulp-task-generator/master/gulp_generator_logo.png)
 
  ```
  $ npm install gulp-task-generator -g
