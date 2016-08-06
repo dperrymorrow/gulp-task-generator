@@ -5,16 +5,15 @@ const gulpFile = path.join(process.cwd(), 'gulpfile.js');
 const templatePath = path.join(__dirname, '/templates');
 const fs = require('fs-extra');
 const Handlebars = require('handlebars');
-const helpers = require('./handlebars_helpers');
 const _ = require('underscore');
 const mkdirp = require('mkdirp');
+const colors = require('colors');
+const helpers = require('./handlebars_helpers');
 
 module.exports = class {
 
   constructor(answers) {
     this.answers = answers;
-    this.answers.cssExt = this.constructor.cssExt(this.answers);
-    this.answers.jsExt =
     this.answers.tasks = this.getTasks();
     this.makeDirs();
 
@@ -24,7 +23,11 @@ module.exports = class {
     });
 
     let tmpl = Handlebars.compile(fs.readFileSync(`${templatePath}/gulpfile.hbs.js`, 'utf8'));
-    fs.outputFile(gulpFile, tmpl(this.answers), err => console.log('Gulpfile.js has been created'.green));
+    fs.outputFile(gulpFile, tmpl(this.answers), err => {
+      console.log(
+        colors.cyan('gulpfile.js') + " => " + colors.green("created")
+      );
+    });
   }
 
   makeDirs() {
@@ -53,7 +56,9 @@ module.exports = class {
     let dest = path.join(process.cwd(), dir);
     try {
       mkdirp.sync(dest);
-      console.log(`${dest} created.`.green);
+      console.log(
+        colors.cyan(dest.split(process.cwd())[1]) + " => " + colors.green('created')
+      );
     } catch(e) {
       if ( e.code == 'EEXIST' ) {
         console.log(`${dest} already exists, skipping.`.red);

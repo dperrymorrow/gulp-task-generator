@@ -24,7 +24,8 @@ module.exports = class {
   }
 
   install() {
-    console.log("> Installing the NPM packages based on your choices.".yellow);
+    console.log("> Installing the NPM packages based on your choices.\n".yellow);
+
     spinner.start(150, {hideCursor: true, doNotBlock: true});
 
     let child = exec(`npm i ${this.packages} --save`, (error, stdout, stderr) => {

@@ -1,6 +1,7 @@
 "use strict";
 
 const path = require('path');
+const _ = require('underscore');
 const fs = require('fs');
 const inquirer = require('inquirer');
 const colors = require('colors');
@@ -11,12 +12,22 @@ const GulpBuilder = require('./gulp_builder');
 module.exports = class {
 
   constructor(args) {
-    console.log(`> Running Gulp-Generator in ${process.cwd()}`.yellow);
+    this.divider("questions");
     this.args = args;
 
     this.checkPackageFile()
       .then(() => this.checkGulpFile())
       .then(() => this.beginQuiz());
+  }
+
+  divider(title) {
+    let len = Math.round((70 - title.length) / 2);
+    let dashes = "";
+    _(len).times(() => {
+      dashes += "-";
+    });
+
+    console.log(`${dashes} ${title.toUpperCase()} ${dashes}`.cyan);
   }
 
   exitWithMsg(msg) {
@@ -26,8 +37,12 @@ module.exports = class {
 
   beginQuiz() {
     inquirer.prompt(questions, answers => {
-      if (this.args[0] !== 'install=false') new PackageBuilder(answers);
-      new GulpBuilder(answers);
+      this.divider('creating dirs & files');
+      new GulpBuilder(_.clone(answers));
+      setTimeout(() => {
+        this.divider('installing dependencies');
+        if (this.args[0] !== 'install=false') new PackageBuilder(_.clone(answers));
+      }, 500);
     });
   }
 
