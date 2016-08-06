@@ -32,7 +32,7 @@ now change directories to your project and run the setup
 
 Gulp-Task-Generator will now ask you a series of questions about your project and build your gulpfile.js accordingly.
 
-```bash
+```
 $ gulp-task-generator
 ------------------------------- QUESTIONS -------------------------------
 ? You already have a Gulpfile.js. Overwrite? Yes
