@@ -1,0 +1,1 @@
+const {{htmlProcessor}} = require('gulp-{{htmlProcessor}}');

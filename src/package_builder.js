@@ -36,6 +36,9 @@ module.exports = class {
         return;
       }
       console.log('> All NPM packages have been installed.'.green);
+      console.log('To use your new Gulp tasks:');
+      console.log('$ npm install -g gulp'.yellow);
+      console.log('$ gulp'.yellow);
       spinner.stop();
     });
 
