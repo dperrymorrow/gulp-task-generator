@@ -122,7 +122,7 @@ module.exports = [
     when: answers => answers.html
   }, {
     type: 'input',
-    name: 'jsDest',
+    name: 'htmlDest',
     message: 'Where do you want your compiled HTML (generated) files?',
     default: 'build/',
     validate: dir,

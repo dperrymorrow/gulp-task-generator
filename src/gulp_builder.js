@@ -18,40 +18,34 @@ module.exports = class {
     this.answers.tasks = this.getTasks();
     this.makeDirs();
 
-    Handlebars.registerPartial('cssBody', fs.readFileSync(`${templatePath}/css_body.hbs.js`, 'utf8'));
-    Handlebars.registerPartial('cssHeader', fs.readFileSync(`${templatePath}/css_header.hbs.js`, 'utf8'));
-
-    Handlebars.registerPartial('jsBody', fs.readFileSync(`${templatePath}/js_body.hbs.js`, 'utf8'));
-    Handlebars.registerPartial('jsHeader', fs.readFileSync(`${templatePath}/js_header.hbs.js`, 'utf8'));
+    ['js', 'css', 'html'].forEach(lang => {
+      Handlebars.registerPartial(`${lang}Body`, fs.readFileSync(`${templatePath}/${lang}_body.hbs.js`, 'utf8'));
+      Handlebars.registerPartial(`${lang}Header`, fs.readFileSync(`${templatePath}/${lang}_header.hbs.js`, 'utf8'));
+    });
 
     let tmpl = Handlebars.compile(fs.readFileSync(`${templatePath}/gulpfile.hbs.js`, 'utf8'));
     fs.outputFile(gulpFile, tmpl(this.answers), err => console.log('Gulpfile.js has been created'.green));
   }
 
   makeDirs() {
-    if (this.answers.jsSource) this.makeDir(this.answers.jsSource);
-    if (this.answers.jsDest) this.makeDir(this.answers.jsDest);
-
-    if (this.answers.cssSource) this.makeDir(this.answers.cssSource);
-    if (this.answers.cssDest) this.makeDir(this.answers.cssDest);
+    ['js', 'css', 'html'].forEach(lang => {
+      if (this.answers[`${lang}Source`]) this.makeDir(this.answers[`${lang}Source`]);
+      if (this.answers[`${lang}Dest`]) this.makeDir(this.answers[`${lang}Dest`]);
+    });
   }
 
   getTasks() {
     let tasks = {};
-    if (this.answers.js) {
-      tasks.js = {
-        src: this.answers.jsSource,
-        dest: this.answers.jsDest,
-        ext: this.constructor.jsExt(this.answers)
+    ['js', 'css', 'html'].forEach(lang => {
+      if (this.answers[lang]) {
+        tasks[lang] = {
+          src: this.answers[`${lang}Source`],
+          dest: this.answers[`${lang}Dest`],
+          ext: this.constructor[`${lang}Ext`](this.answers)
+        }
       }
-    }
-    if (this.answers.css) {
-       tasks.css = {
-        src: this.answers.cssSource,
-        dest: this.answers.cssDest,
-        ext: this.constructor.cssExt(this.answers)
-      }
-    }
+    });
+
     return tasks;
   }
 
@@ -71,6 +65,10 @@ module.exports = class {
 
   static jsExt(answers) {
     return answers.coffeeScript ? 'coffee' : 'js';
+  }
+
+  static htmlExt(answers) {
+    return answers.htmlProcessor;
   }
 
   static cssExt(answers) {

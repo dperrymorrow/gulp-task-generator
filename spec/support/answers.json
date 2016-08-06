@@ -15,5 +15,9 @@
   "jsFile": "main.js",
   "jsSource": "source/coffee",
   "jsDest": "build/js",
-  "cssExt": "less"
+  "cssExt": "less",
+  "html": true,
+  "htmlProcessor": "jade",
+  "htmlSource": "source/jade",
+  "htmlDest": "source"
 }
