@@ -18,6 +18,7 @@ gulp.task('js', () => {
     .pipe(concat('{{jsFile}}'))
     .pipe(rename({suffix: '.min'}))
     .pipe(uglify())
+    .pipe(sourcemaps.write())
     {{/if}}
     {{#if babel}}
     .pipe(babel())
