@@ -8,4 +8,5 @@ gulp.task('html', () => {
     }))
     .pipe({{htmlProcessor}}())
     .pipe(gulp.dest('{{tasks.html.dest}}'))
+    .pipe(gulp.notify('html task finished'))
 });
