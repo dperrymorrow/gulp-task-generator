@@ -9,4 +9,5 @@ const coffee = require('gulp-coffee');
 {{/if}}
 {{#if babel}}
 const babel = require('gulp-babel');
+const es2015 = require('babel-preset-es2015');
 {{/if}}

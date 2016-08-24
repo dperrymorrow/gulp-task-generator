@@ -30,7 +30,11 @@
   "jade": "gulp-jade",
 
   "coffeeScript": "gulp-coffee",
-  "babel": "gulp-babel",
+
+  "babel": [
+    "gulp-babel",
+    "babel-preset-es2015"
+  ],
 
   "jsConcat": [
     "gulp-concat",

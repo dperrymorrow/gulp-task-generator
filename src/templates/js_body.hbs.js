@@ -13,15 +13,15 @@ gulp.task('js', () => {
     .pipe(jshint())
     .pipe(jshint.reporter('default'))
     {{/if}}
-    .pipe(gulp.dest('{{tasks.js.dest}}'))
     {{#if jsConcat}}
+    .pipe(gulp.dest('{{tasks.js.dest}}'))
     .pipe(concat('{{jsFile}}'))
     .pipe(rename({suffix: '.min'}))
     .pipe(uglify())
     .pipe(sourcemaps.write())
     {{/if}}
     {{#if babel}}
-    .pipe(babel())
+    .pipe(babel({presets: ['es2015']}))
     {{/if}}
     .pipe(gulp.dest('{{tasks.js.dest}}'))
     .pipe(notify('js task finished'))
