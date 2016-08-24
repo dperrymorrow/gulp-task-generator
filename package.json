@@ -1,6 +1,6 @@
 {
   "name": "gulp-task-generator",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "CLI tool that sets up your gulpfile.js based on your answers.",
   "engine": "node 4.0",
   "scripts": {
