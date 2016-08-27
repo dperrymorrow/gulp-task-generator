@@ -1,6 +1,6 @@
 "use strict";
 
-const Builder = require('../src/package_builder');
+const PackageBuilder = require('../src/package_builder');
 const libs = require('../src/dependencies');
 const answers = require('./support/answers');
 
@@ -10,14 +10,19 @@ const noDeps = [
   'css', 'cssSource', 'cssDest'
 ];
 
+// dont want to npm install in our test suite
+class Builder extends PackageBuilder {
+  install() {}
+}
+
 describe("Package Builder", () => {
 
   beforeEach(() => {
-    spyOn(Builder.prototype, 'install');
+
   });
 
   describe("checking dependancies and packages", () => {
-    var builder = new Builder(answers);
+    let builder = new Builder(answers);
 
     for (let key in answers) {
       if (!noDeps.includes(key)) {

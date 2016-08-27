@@ -79,10 +79,8 @@ module.exports = class {
           resolve();
         }
       });
-
     });
   }
-
 }
 
 
